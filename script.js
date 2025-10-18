@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initParticleAnimation();
     initButtonAnimations();
     initDashboardConnections();
+    initAuthentication();
+    initGoogleAuth();
 });
 
 // Code Generator Tabs
@@ -442,3 +444,510 @@ if ('performance' in window) {
         console.log(`⚡ Page loaded in ${loadTime}ms`);
     });
 }
+
+// Authentication System
+let currentUser = null;
+let verificationCode = null;
+let resendTimer = null;
+
+// Initialize Authentication
+function initAuthentication() {
+    const authModal = document.getElementById('authModal');
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpBtn = document.getElementById('signUpBtn');
+    const authCloseBtn = document.getElementById('authCloseBtn');
+    const authTabs = document.querySelectorAll('.auth-tab');
+    const signInForm = document.getElementById('emailSignInForm');
+    const signUpForm = document.getElementById('emailSignUpForm');
+    const verificationForm = document.getElementById('codeVerificationForm');
+    const resendCodeBtn = document.getElementById('resendCodeBtn');
+    const signOutBtn = document.getElementById('signOutBtn');
+
+    // Check if user is already signed in
+    checkAuthStatus();
+
+    // Open modal handlers
+    signInBtn?.addEventListener('click', () => openAuthModal('signin'));
+    signUpBtn?.addEventListener('click', () => openAuthModal('signup'));
+
+    // Close modal handlers
+    authCloseBtn?.addEventListener('click', closeAuthModal);
+    authModal?.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuthModal();
+    });
+
+    // Tab switching
+    authTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const form = tab.dataset.form;
+            switchAuthForm(form);
+        });
+    });
+
+    // Form submissions
+    signInForm?.addEventListener('submit', handleSignIn);
+    signUpForm?.addEventListener('submit', handleSignUp);
+    verificationForm?.addEventListener('submit', handleVerification);
+
+    // Resend code
+    resendCodeBtn?.addEventListener('click', handleResendCode);
+
+    // Sign out
+    signOutBtn?.addEventListener('click', handleSignOut);
+
+    // Code input handling
+    initCodeInputs();
+}
+
+// Open Authentication Modal
+function openAuthModal(form = 'signin') {
+    const authModal = document.getElementById('authModal');
+    const modalTitle = document.getElementById('authModalTitle');
+    
+    authModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    if (form === 'signin') {
+        modalTitle.textContent = 'Welcome Back';
+        switchAuthForm('signin');
+    } else {
+        modalTitle.textContent = 'Join Nuvion';
+        switchAuthForm('signup');
+    }
+}
+
+// Close Authentication Modal
+function closeAuthModal() {
+    const authModal = document.getElementById('authModal');
+    authModal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    // Reset forms
+    document.getElementById('signInForm').style.display = 'block';
+    document.getElementById('signUpForm').style.display = 'none';
+    document.getElementById('verificationForm').style.display = 'none';
+    
+    // Clear form data
+    clearAuthForms();
+}
+
+// Switch between sign in and sign up forms
+function switchAuthForm(form) {
+    const signInForm = document.getElementById('signInForm');
+    const signUpForm = document.getElementById('signUpForm');
+    const verificationForm = document.getElementById('verificationForm');
+    const tabs = document.querySelectorAll('.auth-tab');
+    
+    // Hide all forms
+    signInForm.style.display = 'none';
+    signUpForm.style.display = 'none';
+    verificationForm.style.display = 'none';
+    
+    // Update tabs
+    tabs.forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`[data-form="${form}"]`).classList.add('active');
+    
+    // Show selected form
+    if (form === 'signin') {
+        signInForm.style.display = 'block';
+    } else if (form === 'signup') {
+        signUpForm.style.display = 'block';
+    }
+}
+
+// Handle Sign In
+async function handleSignIn(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('signInEmail').value;
+    const password = document.getElementById('signInPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    showLoading('Signing in...');
+    
+    try {
+        // Call API
+        const result = await window.nuvionAPI.signIn(email, password);
+        
+        if (!result.success) {
+            showNotification(result.message, 'error');
+            return;
+        }
+        
+        // Store user session
+        if (rememberMe) {
+            localStorage.setItem('nuvion_user', JSON.stringify(result.user));
+        } else {
+            sessionStorage.setItem('nuvion_user', JSON.stringify(result.user));
+        }
+        
+        currentUser = result.user;
+        updateUIForSignedInUser(result.user);
+        closeAuthModal();
+        showNotification('Welcome back!', 'success');
+        
+    } catch (error) {
+        console.error('Sign in error:', error);
+        showNotification('Sign in failed. Please try again.', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Handle Sign Up
+async function handleSignUp(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('signUpName').value;
+    const email = document.getElementById('signUpEmail').value;
+    const password = document.getElementById('signUpPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Validation
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (password.length < 8) {
+        showNotification('Password must be at least 8 characters', 'error');
+        return;
+    }
+    
+    showLoading('Creating account...');
+    
+    try {
+        // Call API
+        const result = await window.nuvionAPI.signUp({ name, email, password });
+        
+        if (!result.success) {
+            showNotification(result.message, 'error');
+            return;
+        }
+        
+        // Store verification code for verification step
+        verificationCode = result.verificationCode;
+        
+        // Show verification form
+        showVerificationForm(email);
+        
+        // Show development code in console
+        console.log(`🔑 Development: Verification code is ${verificationCode}`);
+        
+    } catch (error) {
+        console.error('Sign up error:', error);
+        showNotification('Sign up failed. Please try again.', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Handle Email Verification
+async function handleVerification(e) {
+    e.preventDefault();
+    
+    const codeInputs = document.querySelectorAll('.code-input');
+    const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+    const email = document.getElementById('verificationEmail').textContent;
+    
+    if (enteredCode.length !== 6) {
+        showNotification('Please enter the complete 6-digit code', 'error');
+        return;
+    }
+    
+    showLoading('Verifying email...');
+    
+    try {
+        // Call API
+        const result = await window.nuvionAPI.verifyEmail(email, enteredCode);
+        
+        if (!result.success) {
+            showNotification(result.message, 'error');
+            return;
+        }
+        
+        // Store user session
+        localStorage.setItem('nuvion_user', JSON.stringify(result.user));
+        currentUser = result.user;
+        updateUIForSignedInUser(result.user);
+        closeAuthModal();
+        showNotification('Account created successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Verification error:', error);
+        showNotification('Verification failed. Please try again.', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Handle Resend Code
+async function handleResendCode() {
+    const email = document.getElementById('verificationEmail').textContent;
+    
+    showLoading('Resending code...');
+    
+    try {
+        // Call API
+        const result = await window.nuvionAPI.resendVerificationCode(email);
+        
+        if (!result.success) {
+            showNotification(result.message, 'error');
+            return;
+        }
+        
+        // Store new verification code
+        verificationCode = result.verificationCode;
+        
+        // Reset timer
+        startResendTimer();
+        
+        showNotification('Verification code sent!', 'success');
+        
+        // Show development code in console
+        console.log(`🔑 Development: New verification code is ${verificationCode}`);
+        
+    } catch (error) {
+        console.error('Resend code error:', error);
+        showNotification('Failed to resend code. Please try again.', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Handle Sign Out
+function handleSignOut() {
+    currentUser = null;
+    localStorage.removeItem('nuvion_user');
+    sessionStorage.removeItem('nuvion_user');
+    updateUIForSignedOutUser();
+    showNotification('Signed out successfully', 'info');
+}
+
+// Show Verification Form
+function showVerificationForm(email) {
+    const signInForm = document.getElementById('signInForm');
+    const signUpForm = document.getElementById('signUpForm');
+    const verificationForm = document.getElementById('verificationForm');
+    const verificationEmail = document.getElementById('verificationEmail');
+    
+    signInForm.style.display = 'none';
+    signUpForm.style.display = 'none';
+    verificationForm.style.display = 'block';
+    
+    verificationEmail.textContent = email;
+    
+    // Start resend timer
+    startResendTimer();
+}
+
+// Initialize Code Inputs
+function initCodeInputs() {
+    const codeInputs = document.querySelectorAll('.code-input');
+    
+    codeInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+            
+            // Only allow numbers
+            if (!/^\d$/.test(value)) {
+                e.target.value = '';
+                return;
+            }
+            
+            // Move to next input
+            if (value && index < codeInputs.length - 1) {
+                codeInputs[index + 1].focus();
+            }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+            // Handle backspace
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                codeInputs[index - 1].focus();
+            }
+        });
+        
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text');
+            const numbers = pastedData.replace(/\D/g, '').slice(0, 6);
+            
+            numbers.split('').forEach((num, i) => {
+                if (codeInputs[i]) {
+                    codeInputs[i].value = num;
+                }
+            });
+            
+            // Focus last filled input
+            const lastFilledIndex = Math.min(numbers.length - 1, codeInputs.length - 1);
+            codeInputs[lastFilledIndex].focus();
+        });
+    });
+}
+
+// Start Resend Timer
+function startResendTimer() {
+    const resendBtn = document.getElementById('resendCodeBtn');
+    const countdown = document.getElementById('countdown');
+    const timerText = document.getElementById('timerText');
+    
+    let timeLeft = 60;
+    resendBtn.disabled = true;
+    
+    resendTimer = setInterval(() => {
+        timeLeft--;
+        countdown.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(resendTimer);
+            resendBtn.disabled = false;
+            timerText.style.display = 'none';
+        }
+    }, 1000);
+}
+
+
+// Check Authentication Status
+function checkAuthStatus() {
+    const user = localStorage.getItem('nuvion_user') || sessionStorage.getItem('nuvion_user');
+    
+    if (user) {
+        try {
+            currentUser = JSON.parse(user);
+            updateUIForSignedInUser(currentUser);
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            handleSignOut();
+        }
+    }
+}
+
+// Update UI for Signed In User
+function updateUIForSignedInUser(user) {
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpBtn = document.getElementById('signUpBtn');
+    const userProfile = document.getElementById('userProfile');
+    const userAvatarImg = document.getElementById('userAvatarImg');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    
+    // Hide auth buttons
+    signInBtn.style.display = 'none';
+    signUpBtn.style.display = 'none';
+    
+    // Show user profile
+    userProfile.style.display = 'flex';
+    userAvatarImg.src = user.avatar;
+    userAvatarImg.alt = user.name;
+    userName.textContent = user.name;
+    userEmail.textContent = user.email;
+}
+
+// Update UI for Signed Out User
+function updateUIForSignedOutUser() {
+    const signInBtn = document.getElementById('signInBtn');
+    const signUpBtn = document.getElementById('signUpBtn');
+    const userProfile = document.getElementById('userProfile');
+    
+    // Show auth buttons
+    signInBtn.style.display = 'inline-flex';
+    signUpBtn.style.display = 'inline-flex';
+    
+    // Hide user profile
+    userProfile.style.display = 'none';
+}
+
+// Clear Auth Forms
+function clearAuthForms() {
+    document.getElementById('emailSignInForm').reset();
+    document.getElementById('emailSignUpForm').reset();
+    document.getElementById('codeVerificationForm').reset();
+    
+    // Clear code inputs
+    document.querySelectorAll('.code-input').forEach(input => {
+        input.value = '';
+    });
+}
+
+// Show Loading Overlay
+function showLoading(text = 'Processing...') {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    
+    loadingText.textContent = text;
+    loadingOverlay.style.display = 'flex';
+}
+
+// Hide Loading Overlay
+function hideLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'none';
+}
+
+// Simulate API Call
+function simulateAPICall(delay = 1000) {
+    return new Promise(resolve => setTimeout(resolve, delay));
+}
+
+// Google OAuth Integration
+function initGoogleAuth() {
+    // Load Google API
+    if (typeof gapi !== 'undefined') {
+        gapi.load('auth2', initGoogleAuthClient);
+    }
+}
+
+function initGoogleAuthClient() {
+    gapi.auth2.init({
+        client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with actual client ID
+        scope: 'email profile'
+    }).then(() => {
+        console.log('Google Auth initialized');
+    });
+}
+
+// Handle Google Sign In
+async function handleGoogleSignIn() {
+    if (typeof gapi === 'undefined') {
+        showNotification('Google Sign-In not available', 'error');
+        return;
+    }
+    
+    showLoading('Signing in with Google...');
+    
+    try {
+        const authInstance = gapi.auth2.getAuthInstance();
+        const googleUser = await authInstance.signIn();
+        
+        // Call API
+        const result = await window.nuvionAPI.handleGoogleOAuth(googleUser);
+        
+        if (!result.success) {
+            showNotification(result.message, 'error');
+            return;
+        }
+        
+        // Store user session
+        localStorage.setItem('nuvion_user', JSON.stringify(result.user));
+        currentUser = result.user;
+        updateUIForSignedInUser(result.user);
+        closeAuthModal();
+        showNotification('Welcome to Nuvion!', 'success');
+        
+    } catch (error) {
+        console.error('Google Sign-In error:', error);
+        showNotification('Google Sign-In failed', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Add Google Sign-In event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
+    const googleSignUpBtn = document.getElementById('googleSignUpBtn');
+    
+    googleSignInBtn?.addEventListener('click', handleGoogleSignIn);
+    googleSignUpBtn?.addEventListener('click', handleGoogleSignIn);
+});

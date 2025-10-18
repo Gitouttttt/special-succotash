@@ -23,8 +23,18 @@
                 <a href="#dashboard" class="nav-link">Dashboard</a>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-outline">Sign In</button>
-                <button class="btn btn-primary">Start Free</button>
+                <button class="btn btn-outline" id="signInBtn">Sign In</button>
+                <button class="btn btn-primary" id="signUpBtn">Start Free</button>
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <div class="user-avatar" id="userAvatar">
+                        <img src="" alt="User Avatar" id="userAvatarImg">
+                    </div>
+                    <div class="user-menu">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                        <button class="btn btn-outline btn-small" id="signOutBtn">Sign Out</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -530,6 +540,146 @@ function AIGenerator() {
         </div>
     </footer>
 
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <h2 id="authModalTitle">Welcome to Nuvion</h2>
+                <button class="auth-close-btn" id="authCloseBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <div class="auth-form" id="signInForm">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-form="signin">Sign In</button>
+                    <button class="auth-tab" data-form="signup">Sign Up</button>
+                </div>
+                
+                <div class="auth-content">
+                    <div class="google-auth-section">
+                        <button class="btn btn-google" id="googleSignInBtn">
+                            <i class="fab fa-google"></i>
+                            Continue with Google
+                        </button>
+                        <div class="auth-divider">
+                            <span>or</span>
+                        </div>
+                    </div>
+                    
+                    <form class="auth-form-fields" id="emailSignInForm">
+                        <div class="form-group">
+                            <label for="signInEmail">Email Address</label>
+                            <input type="email" id="signInEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signInPassword">Password</label>
+                            <input type="password" id="signInPassword" name="password" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sign Up Form -->
+            <div class="auth-form" id="signUpForm" style="display: none;">
+                <div class="auth-tabs">
+                    <button class="auth-tab" data-form="signin">Sign In</button>
+                    <button class="auth-tab active" data-form="signup">Sign Up</button>
+                </div>
+                
+                <div class="auth-content">
+                    <div class="google-auth-section">
+                        <button class="btn btn-google" id="googleSignUpBtn">
+                            <i class="fab fa-google"></i>
+                            Continue with Google
+                        </button>
+                        <div class="auth-divider">
+                            <span>or</span>
+                        </div>
+                    </div>
+                    
+                    <form class="auth-form-fields" id="emailSignUpForm">
+                        <div class="form-group">
+                            <label for="signUpName">Full Name</label>
+                            <input type="text" id="signUpName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpEmail">Email Address</label>
+                            <input type="email" id="signUpEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpPassword">Password</label>
+                            <input type="password" id="signUpPassword" name="password" required minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="privacy-link">Privacy Policy</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Verification Form -->
+            <div class="auth-form" id="verificationForm" style="display: none;">
+                <div class="auth-content">
+                    <div class="verification-icon">
+                        <i class="fas fa-envelope-open"></i>
+                    </div>
+                    <h3>Check Your Email</h3>
+                    <p>We've sent a verification code to <span id="verificationEmail"></span></p>
+                    <p class="verification-subtext">Enter the 6-digit code below to complete your registration.</p>
+                    
+                    <form class="verification-form" id="codeVerificationForm">
+                        <div class="code-input-container">
+                            <input type="text" class="code-input" maxlength="1" data-index="0">
+                            <input type="text" class="code-input" maxlength="1" data-index="1">
+                            <input type="text" class="code-input" maxlength="1" data-index="2">
+                            <input type="text" class="code-input" maxlength="1" data-index="3">
+                            <input type="text" class="code-input" maxlength="1" data-index="4">
+                            <input type="text" class="code-input" maxlength="1" data-index="5">
+                        </div>
+                        <div class="verification-actions">
+                            <button type="button" class="btn btn-outline" id="resendCodeBtn">Resend Code</button>
+                            <button type="submit" class="btn btn-primary">Verify Email</button>
+                        </div>
+                        <div class="verification-timer">
+                            <span id="timerText">Resend code in <span id="countdown">60</span>s</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
     <script src="script.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
