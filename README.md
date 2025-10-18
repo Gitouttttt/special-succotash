@@ -59,6 +59,28 @@ php -S localhost:8000
 
 Then visit `http://localhost:8000` in your browser.
 
+## 🔐 Authentication Setup
+
+### Google OAuth Setup (Optional)
+To enable real Google OAuth instead of demo mode:
+
+1. **Go to Google Cloud Console**: https://console.cloud.google.com/
+2. **Create a new project** or select existing one
+3. **Enable Google+ API** in the APIs & Services section
+4. **Create OAuth 2.0 credentials**:
+   - Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client ID"
+   - Application type: "Web application"
+   - Add authorized origins: `http://localhost:8000` (or your domain)
+   - Add authorized redirect URIs: `http://localhost:8000`
+5. **Copy the Client ID** and replace `YOUR_GOOGLE_CLIENT_ID` in `script.js`
+6. **Test the integration** with your Google account
+
+### Demo Mode
+The authentication system works in demo mode by default:
+- **Email sign-up** with verification codes (shown in console)
+- **Google OAuth simulation** with mock user data
+- **All features functional** without external dependencies
+
 ## 📱 Responsive Design
 
 The website is fully responsive and optimized for:

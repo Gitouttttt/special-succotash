@@ -895,28 +895,45 @@ function initGoogleAuth() {
     // Load Google API
     if (typeof gapi !== 'undefined') {
         gapi.load('auth2', initGoogleAuthClient);
+    } else {
+        // Fallback for when Google API is not loaded
+        console.log('Google API not loaded, using fallback authentication');
     }
 }
 
 function initGoogleAuthClient() {
+    // For demo purposes, we'll use a mock client ID
+    // In production, replace with your actual Google Client ID
+    const clientId = 'YOUR_GOOGLE_CLIENT_ID';
+    
+    if (clientId === 'YOUR_GOOGLE_CLIENT_ID') {
+        console.log('⚠️ Please replace YOUR_GOOGLE_CLIENT_ID with your actual Google Client ID');
+        // For demo purposes, we'll simulate Google auth
+        return;
+    }
+    
     gapi.auth2.init({
-        client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with actual client ID
+        client_id: clientId,
         scope: 'email profile'
     }).then(() => {
-        console.log('Google Auth initialized');
+        console.log('✅ Google Auth initialized successfully');
+    }).catch(error => {
+        console.error('❌ Google Auth initialization failed:', error);
     });
 }
 
 // Handle Google Sign In
 async function handleGoogleSignIn() {
-    if (typeof gapi === 'undefined') {
-        showNotification('Google Sign-In not available', 'error');
-        return;
-    }
-    
     showLoading('Signing in with Google...');
     
     try {
+        // Check if Google API is available
+        if (typeof gapi === 'undefined' || !gapi.auth2) {
+            // For demo purposes, simulate Google OAuth
+            await simulateGoogleOAuth();
+            return;
+        }
+        
         const authInstance = gapi.auth2.getAuthInstance();
         const googleUser = await authInstance.signIn();
         
@@ -937,10 +954,41 @@ async function handleGoogleSignIn() {
         
     } catch (error) {
         console.error('Google Sign-In error:', error);
-        showNotification('Google Sign-In failed', 'error');
+        showNotification('Google Sign-In failed. Please try again.', 'error');
     } finally {
         hideLoading();
     }
+}
+
+// Simulate Google OAuth for demo purposes
+async function simulateGoogleOAuth() {
+    // Simulate API delay
+    await simulateAPICall(2000);
+    
+    // Create a mock Google user
+    const mockGoogleUser = {
+        getBasicProfile: () => ({
+            getId: () => 'google_' + Date.now(),
+            getEmail: () => 'demo@nuvion.ai',
+            getName: () => 'Demo User',
+            getImageUrl: () => 'https://ui-avatars.com/api/?name=Demo+User&background=6366f1&color=fff'
+        })
+    };
+    
+    // Call API with mock user
+    const result = await window.nuvionAPI.handleGoogleOAuth(mockGoogleUser);
+    
+    if (!result.success) {
+        showNotification(result.message, 'error');
+        return;
+    }
+    
+    // Store user session
+    localStorage.setItem('nuvion_user', JSON.stringify(result.user));
+    currentUser = result.user;
+    updateUIForSignedInUser(result.user);
+    closeAuthModal();
+    showNotification('Welcome to Nuvion! (Demo Mode)', 'success');
 }
 
 // Add Google Sign-In event listeners
