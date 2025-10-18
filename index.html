@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuvion - Intelligence Meets Innovation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">Nuvion</span>
+            </div>
+            <div class="nav-links">
+                <a href="#explore" class="nav-link">Explore APIs</a>
+                <a href="#test" class="nav-link">Test APIs</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#dashboard" class="nav-link">Dashboard</a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="signInBtn">Sign In</button>
+                <button class="btn btn-primary" id="signUpBtn">Start Free</button>
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <div class="user-avatar" id="userAvatar">
+                        <img src="" alt="User Avatar" id="userAvatarImg">
+                    </div>
+                    <div class="user-menu">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                        <button class="btn btn-outline btn-small" id="signOutBtn">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Bring your AI projects to life with speed and precision.</h1>
+                <p class="hero-subtitle">Nuvion gives you a beautifully designed platform to explore, test, and integrate the world's most advanced AI APIs. From natural language and image generation to voice synthesis and data automation — everything is ready at your fingertips.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-large">
+                        <i class="fas fa-rocket"></i>
+                        Start Free
+                    </button>
+                    <button class="btn btn-secondary btn-large">
+                        <i class="fas fa-search"></i>
+                        Explore APIs
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="dashboard-mockup">
+                    <div class="dashboard-header">
+                        <div class="dashboard-title">AI API Dashboard</div>
+                        <div class="dashboard-status">Connected</div>
+                    </div>
+                    <div class="api-connections">
+                        <div class="api-card" data-api="openai">
+                            <div class="api-icon">🧠</div>
+                            <div class="api-name">OpenAI</div>
+                            <div class="api-status active"></div>
+                        </div>
+                        <div class="api-card" data-api="stability">
+                            <div class="api-icon">🖼️</div>
+                            <div class="api-name">Stability</div>
+                            <div class="api-status active"></div>
+                        </div>
+                        <div class="api-card" data-api="elevenlabs">
+                            <div class="api-icon">🔊</div>
+                            <div class="api-name">ElevenLabs</div>
+                            <div class="api-status active"></div>
+                        </div>
+                        <div class="api-card" data-api="huggingface">
+                            <div class="api-icon">💬</div>
+                            <div class="api-name">Hugging Face</div>
+                            <div class="api-status active"></div>
+                        </div>
+                    </div>
+                    <div class="connection-lines">
+                        <div class="line line-1"></div>
+                        <div class="line line-2"></div>
+                        <div class="line line-3"></div>
+                        <div class="line line-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore APIs Section -->
+    <section id="explore" class="section explore-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">All the AI APIs You Need — In One Place.</h2>
+                <p class="section-subtitle">Browse, compare, and test APIs for text, images, voice, and more. Designed for speed, clarity, and efficiency.</p>
+            </div>
+            <div class="api-grid">
+                <div class="api-card-large">
+                    <div class="api-icon-large">🧠</div>
+                    <h3 class="api-title">OpenAI GPT</h3>
+                    <p class="api-description">Create text, chat, and reasoning-based applications effortlessly.</p>
+                    <div class="api-features">
+                        <span class="feature-tag">Text Generation</span>
+                        <span class="feature-tag">Chat Completion</span>
+                        <span class="feature-tag">Embeddings</span>
+                    </div>
+                </div>
+                <div class="api-card-large">
+                    <div class="api-icon-large">🖼️</div>
+                    <h3 class="api-title">Stability AI</h3>
+                    <p class="api-description">Generate stunning images from simple prompts in seconds.</p>
+                    <div class="api-features">
+                        <span class="feature-tag">Image Generation</span>
+                        <span class="feature-tag">Image Editing</span>
+                        <span class="feature-tag">Upscaling</span>
+                    </div>
+                </div>
+                <div class="api-card-large">
+                    <div class="api-icon-large">🔊</div>
+                    <h3 class="api-title">ElevenLabs</h3>
+                    <p class="api-description">Produce human-like voices for speech, narration, and apps.</p>
+                    <div class="api-features">
+                        <span class="feature-tag">Voice Synthesis</span>
+                        <span class="feature-tag">Voice Cloning</span>
+                        <span class="feature-tag">Audio Processing</span>
+                    </div>
+                </div>
+                <div class="api-card-large">
+                    <div class="api-icon-large">💬</div>
+                    <h3 class="api-title">Hugging Face</h3>
+                    <p class="api-description">Access thousands of open-source AI models across multiple domains.</p>
+                    <div class="api-features">
+                        <span class="feature-tag">NLP Models</span>
+                        <span class="feature-tag">Computer Vision</span>
+                        <span class="feature-tag">Audio Models</span>
+                    </div>
+                </div>
+            </div>
+            <div class="section-cta">
+                <button class="btn btn-primary btn-large">
+                    <i class="fas fa-sparkles"></i>
+                    Browse Full API Library
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Test APIs Section -->
+    <section id="test" class="section test-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Your Interactive AI Playground.</h2>
+                <p class="section-subtitle">No installs. No setup. Just input your API key and see live results immediately.</p>
+            </div>
+            <div class="playground">
+                <div class="playground-input">
+                    <div class="input-header">
+                        <h3>Test Your API</h3>
+                        <div class="api-selector">
+                            <select class="neumorphic-select">
+                                <option value="openai">OpenAI GPT-4</option>
+                                <option value="stability">Stability AI</option>
+                                <option value="elevenlabs">ElevenLabs</option>
+                                <option value="huggingface">Hugging Face</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <textarea class="neumorphic-textarea" placeholder="Generate a concise summary for this paragraph..."></textarea>
+                    </div>
+                    <div class="input-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-play"></i>
+                            Test API
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-key"></i>
+                            Add API Key
+                        </button>
+                    </div>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">
+                        <h3>Live Results</h3>
+                        <div class="output-status">
+                            <div class="status-indicator"></div>
+                            <span>Ready</span>
+                        </div>
+                    </div>
+                    <div class="output-content">
+                        <div class="output-placeholder">
+                            <i class="fas fa-robot"></i>
+                            <p>Enter a prompt and click "Test API" to see results here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Generator Section -->
+    <section class="section code-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ready-to-Use Code in Seconds.</h2>
+                <p class="section-subtitle">Generate fully functional snippets for Python, Node.js, or React — tailored to your API selection.</p>
+            </div>
+            <div class="code-generator">
+                <div class="code-tabs">
+                    <button class="code-tab active" data-lang="python">Python</button>
+                    <button class="code-tab" data-lang="nodejs">Node.js</button>
+                    <button class="code-tab" data-lang="react">React</button>
+                </div>
+                <div class="code-content">
+                    <div class="code-block active" data-lang="python">
+                        <pre><code>import openai
+
+# Initialize the OpenAI client
+client = openai.OpenAI(api_key="your-api-key")
+
+# Generate text using GPT-4
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "user", "content": "Generate a concise summary for this paragraph"}
+    ]
+)
+
+print(response.choices[0].message.content)</code></pre>
+                    </div>
+                    <div class="code-block" data-lang="nodejs">
+                        <pre><code>const { OpenAI } = require('openai');
+
+const openai = new OpenAI({
+  apiKey: 'your-api-key',
+});
+
+async function generateText() {
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [
+      { role: "user", content: "Generate a concise summary for this paragraph" }
+    ],
+  });
+
+  console.log(completion.choices[0].message.content);
+}
+
+generateText();</code></pre>
+                    </div>
+                    <div class="code-block" data-lang="react">
+                        <pre><code>import React, { useState } from 'react';
+
+function AIGenerator() {
+  const [prompt, setPrompt] = useState('');
+  const [response, setResponse] = useState('');
+
+  const generateText = async () => {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    setResponse(data.text);
+  };
+
+  return (
+    <div>
+      <textarea 
+        value={prompt} 
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Enter your prompt..."
+      />
+      <button onClick={generateText}>Generate</button>
+      <div>{response}</div>
+    </div>
+  );
+}</code></pre>
+                    </div>
+                </div>
+                <div class="code-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-copy"></i>
+                        Copy Code
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </button>
+                </div>
+            </div>
+            <div class="section-footer">
+                <p class="section-footer-text">Skip the boilerplate. Focus on building.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="section community-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Discover What Others Are Building.</h2>
+                <p class="section-subtitle">Explore projects, remix ideas, and get inspired by other developers using Nuvion.</p>
+            </div>
+            <div class="community-grid">
+                <div class="project-card">
+                    <div class="project-icon">🤖</div>
+                    <h3 class="project-title">AI Chatbots with persistent memory</h3>
+                    <p class="project-description">Build intelligent chatbots that remember context across conversations using GPT-4 and custom memory systems.</p>
+                    <div class="project-tags">
+                        <span class="tag">GPT-4</span>
+                        <span class="tag">Memory</span>
+                        <span class="tag">Chat</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🎨</div>
+                    <h3 class="project-title">Story Builders that turn text into images</h3>
+                    <p class="project-description">Create immersive storytelling experiences by generating images from text descriptions using Stability AI.</p>
+                    <div class="project-tags">
+                        <span class="tag">Stability AI</span>
+                        <span class="tag">Storytelling</span>
+                        <span class="tag">Images</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🔊</div>
+                    <h3 class="project-title">Voice Narration tools using GPT + ElevenLabs</h3>
+                    <p class="project-description">Generate natural-sounding voice narrations by combining text generation with voice synthesis.</p>
+                    <div class="project-tags">
+                        <span class="tag">GPT-4</span>
+                        <span class="tag">ElevenLabs</span>
+                        <span class="tag">Voice</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section dashboard-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Your Command Center for APIs.</h2>
+                <p class="section-subtitle">Track usage, monitor performance, and securely manage API keys — all from a beautifully designed dashboard.</p>
+            </div>
+            <div class="dashboard-preview">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">API Analytics Dashboard</div>
+                    <div class="dashboard-controls">
+                        <button class="btn btn-small">Last 7 days</button>
+                        <button class="btn btn-small">Export</button>
+                    </div>
+                </div>
+                <div class="dashboard-content">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-value">2,847</div>
+                            <div class="metric-label">API Calls</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">⚡</div>
+                            <div class="metric-value">142ms</div>
+                            <div class="metric-label">Avg Response</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">💰</div>
+                            <div class="metric-value">$24.50</div>
+                            <div class="metric-label">This Month</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">🔑</div>
+                            <div class="metric-value">12</div>
+                            <div class="metric-label">Active Keys</div>
+                        </div>
+                    </div>
+                    <div class="chart-area">
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-line"></i>
+                            <p>API Usage Chart</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Simple, Transparent, and Flexible.</h2>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">Starter</h3>
+                        <div class="pricing-price">
+                            <span class="price-currency">$</span>
+                            <span class="price-amount">0</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>10 API tests/day</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Basic API access</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Community support</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-full">Get Started</button>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">Pro</h3>
+                        <div class="pricing-price">
+                            <span class="price-currency">$</span>
+                            <span class="price-amount">19</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Unlimited API calls</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Key Vault</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Code Generator</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Priority support</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full">Upgrade to Pro</button>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">Enterprise</h3>
+                        <div class="pricing-price">
+                            <span class="price-amount">Custom</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Team Workspaces</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Custom API Integrations</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Dedicated support</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>SLA guarantee</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-full">Contact Us</button>
+                </div>
+            </div>
+            <div class="pricing-footer">
+                <p>No hidden fees. Pay only for what you use. Cancel anytime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Empower your workflow. Build faster, smarter, and cleaner with Nuvion.</h2>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary btn-large">
+                        <i class="fas fa-rocket"></i>
+                        Start Free
+                    </button>
+                    <button class="btn btn-secondary btn-large">
+                        <i class="fas fa-users"></i>
+                        Join the Developer Network
+                    </button>
+                </div>
+            </div>
+            <div class="cta-visual">
+                <div class="gradient-wave"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <span class="logo-icon">🧠</span>
+                        <span class="logo-text">Nuvion</span>
+                    </div>
+                    <p class="footer-text">© 2025 — Designed for the next generation of AI developers.</p>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Docs</a>
+                        <a href="#" class="footer-link">Community</a>
+                        <a href="#" class="footer-link">Terms</a>
+                        <a href="#" class="footer-link">Privacy</a>
+                        <a href="#" class="footer-link">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <h2 id="authModalTitle">Welcome to Nuvion</h2>
+                <button class="auth-close-btn" id="authCloseBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <div class="auth-form" id="signInForm">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-form="signin">Sign In</button>
+                    <button class="auth-tab" data-form="signup">Sign Up</button>
+                </div>
+                
+                <div class="auth-content">
+                    <div class="google-auth-section">
+                        <button class="btn btn-google" id="googleSignInBtn">
+                            <i class="fab fa-google"></i>
+                            <span class="google-text">Continue with Google</span>
+                        </button>
+                        <div class="demo-mode-indicator">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Demo Mode - Click to simulate Google Sign-In</span>
+                        </div>
+                        <div class="auth-divider">
+                            <span>or</span>
+                        </div>
+                    </div>
+                    
+                    <form class="auth-form-fields" id="emailSignInForm">
+                        <div class="form-group">
+                            <label for="signInEmail">Email Address</label>
+                            <input type="email" id="signInEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signInPassword">Password</label>
+                            <input type="password" id="signInPassword" name="password" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sign Up Form -->
+            <div class="auth-form" id="signUpForm" style="display: none;">
+                <div class="auth-tabs">
+                    <button class="auth-tab" data-form="signin">Sign In</button>
+                    <button class="auth-tab active" data-form="signup">Sign Up</button>
+                </div>
+                
+                <div class="auth-content">
+                    <div class="google-auth-section">
+                        <button class="btn btn-google" id="googleSignUpBtn">
+                            <i class="fab fa-google"></i>
+                            <span class="google-text">Continue with Google</span>
+                        </button>
+                        <div class="demo-mode-indicator">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Demo Mode - Click to simulate Google Sign-In</span>
+                        </div>
+                        <div class="auth-divider">
+                            <span>or</span>
+                        </div>
+                    </div>
+                    
+                    <form class="auth-form-fields" id="emailSignUpForm">
+                        <div class="form-group">
+                            <label for="signUpName">Full Name</label>
+                            <input type="text" id="signUpName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpEmail">Email Address</label>
+                            <input type="email" id="signUpEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpPassword">Password</label>
+                            <input type="password" id="signUpPassword" name="password" required minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="privacy-link">Privacy Policy</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Verification Form -->
+            <div class="auth-form" id="verificationForm" style="display: none;">
+                <div class="auth-content">
+                    <div class="verification-icon">
+                        <i class="fas fa-envelope-open"></i>
+                    </div>
+                    <h3>Check Your Email</h3>
+                    <p>We've sent a verification code to <span id="verificationEmail"></span></p>
+                    <p class="verification-subtext">Enter the 6-digit code below to complete your registration.</p>
+                    
+                    <form class="verification-form" id="codeVerificationForm">
+                        <div class="code-input-container">
+                            <input type="text" class="code-input" maxlength="1" data-index="0">
+                            <input type="text" class="code-input" maxlength="1" data-index="1">
+                            <input type="text" class="code-input" maxlength="1" data-index="2">
+                            <input type="text" class="code-input" maxlength="1" data-index="3">
+                            <input type="text" class="code-input" maxlength="1" data-index="4">
+                            <input type="text" class="code-input" maxlength="1" data-index="5">
+                        </div>
+                        <div class="verification-actions">
+                            <button type="button" class="btn btn-outline" id="resendCodeBtn">Resend Code</button>
+                            <button type="submit" class="btn btn-primary">Verify Email</button>
+                        </div>
+                        <div class="verification-timer">
+                            <span id="timerText">Resend code in <span id="countdown">60</span>s</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
